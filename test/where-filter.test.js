@@ -1,4 +1,4 @@
-import {whereFilter} from '../where-filter';
+import whereFilter from '../where-filter';
 import chai from 'chai';
 
 chai.should();

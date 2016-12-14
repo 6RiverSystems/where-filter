@@ -192,7 +192,7 @@ function test(example, value) {
 		(value != null ? value.toString() : value);
 }
 
-export function whereFilter(where) {
+function whereFilter(where) {
 	if (typeof where === 'function') {
 		return where;
 	}
@@ -260,3 +260,5 @@ export function whereFilter(where) {
 		});
 	};
 }
+
+module.exports = whereFilter;
