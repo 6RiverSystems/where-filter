@@ -203,16 +203,16 @@ function whereFilter(where) {
 	const keys = Object.keys(where);
 
 	return function(obj) {
-		return keys.every((key) => {
+		return keys.every(function(key) {
 			if (key === AND || key === OR) {
 				if (Array.isArray(where[key])) {
 					if (key === AND) {
-						return where[key].every((cond) => {
+						return where[key].every(function(cond) {
 							return whereFilter(cond)(obj);
 						});
 					}
 					if (key === OR) {
-						return where[key].some((cond) => {
+						return where[key].some(function(cond) {
 							return whereFilter(cond)(obj);
 						});
 					}
