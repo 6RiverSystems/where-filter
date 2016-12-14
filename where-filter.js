@@ -1,3 +1,6 @@
+'use strict';
+
+
 // Where-like filter to support syntax expressions like:
 // {a: 1}
 // {and: [{a: 1}, {b: "2"}]}
