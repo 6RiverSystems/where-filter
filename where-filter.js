@@ -6,18 +6,18 @@
 // {and: [{a: 1}, {b: "2"}]}
 // {or: [{a: 1}, {b: "2"}]}
 
-const AND = 'and';
-const OR = 'or';
+var AND = 'and';
+var OR = 'or';
 
 function getValue(obj, path) {
 	if (obj == null) {
 		return undefined;
 	}
 
-	const keys = path.split('.');
-	let val = obj;
+	var keys = path.split('.');
+	var val = obj;
 
-	for (let i = 0, n = keys.length; i < n; i++) {
+	for (var i = 0, n = keys.length; i < n; i++) {
 		val = val[keys[i]];
 		if (val == null) {
 			return val;
@@ -60,7 +60,7 @@ function compare(val1, val2) {
 		return val1 - val2;
 	}
 	if (val1 instanceof Date) {
-		let result = val1 - val2;
+		var result = val1 - val2;
 
 		return result;
 	}
@@ -90,14 +90,14 @@ function toRegExp(pattern) {
 	if (pattern instanceof RegExp) {
 		return pattern;
 	}
-	let regex = '';
+	var regex = '';
 
 	// Escaping user input to be treated as a literal string within a regular expression
 	// https://developer.mozilla.org/en-US/docs/Web/
 	// JavaScript/Guide/Regular_Expressions#Writing_a_Regular_Expression_Pattern
 	pattern = pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-	for (let i = 0, n = pattern.length; i < n; i++) {
-		let char = pattern.charAt(i);
+	for (var i = 0, n = pattern.length; i < n; i++) {
+		var char = pattern.charAt(i);
 
 		if (char === '\\') {
 			i++; // Skip to next char
@@ -135,7 +135,7 @@ function test(example, value) {
 		}
 
 		if (example.inq) {
-			for (let i = 0; i < example.inq.length; i++) {
+			for (var i = 0; i < example.inq.length; i++) {
 				if (example.inq[i] == value) {
 					return true;
 				}
@@ -144,7 +144,7 @@ function test(example, value) {
 		}
 
 		if (example.nin) {
-			for (let i = 0; i < example.nin.length; i++) {
+			for (var i = 0; i < example.nin.length; i++) {
 				if (example.nin[i] == value) {
 					return false;
 				}
@@ -162,7 +162,7 @@ function test(example, value) {
 		}
 
 		if (example.like || example.nlike || example.ilike || example.nilike) {
-			let like = example.like || example.nlike || example.ilike || example.nilike;
+			var like = example.like || example.nlike || example.ilike || example.nilike;
 
 			if (typeof like === 'string') {
 				like = toRegExp(like);
@@ -200,7 +200,7 @@ function whereFilter(where) {
 		return where;
 	}
 
-	const keys = Object.keys(where);
+	var keys = Object.keys(where);
 
 	return function(obj) {
 		return keys.every(function(key) {
@@ -219,10 +219,10 @@ function whereFilter(where) {
 				}
 			}
 
-			const value = getValue(obj, key);
+			var value = getValue(obj, key);
 
 			if (Array.isArray(value)) {
-				const matcher  = where[key];
+				var matcher  = where[key];
 
 				// The following condition is for the case where we are querying with
 				// a neq filter, and when the value is an empty array ([]).
@@ -230,7 +230,7 @@ function whereFilter(where) {
 					return true;
 				}
 				return value.some(function(v, i) {
-					const cond = {};
+					var cond = {};
 
 					cond[i] = matcher;
 					return whereFilter(cond)(value);
@@ -243,12 +243,12 @@ function whereFilter(where) {
 
 			// If we have a composed key a.b and b would resolve to a property of an object inside an array
 			// then, we attempt to emulate mongo db matching. Helps for embedded relations
-			const dotIndex = key.indexOf('.');
-			const subValue = obj[key.substring(0, dotIndex)];
+			var dotIndex = key.indexOf('.');
+			var subValue = obj[key.substring(0, dotIndex)];
 
 			if (dotIndex !== -1) {
-				const subWhere = {};
-				const subKey = key.substring(dotIndex + 1);
+				var subWhere = {};
+				var subKey = key.substring(dotIndex + 1);
 
 				subWhere[subKey] = where[key];
 				if (Array.isArray(subValue)) {
