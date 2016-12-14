@@ -2,7 +2,7 @@
   "name": "where-filter",
   "version": "1.0.0",
   "description": "",
-  "main": "where-filter.test.js",
+  "main": "where-filter.js",
   "scripts": {
     "pretest": "eslint .",
     "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --timeout 30000"
