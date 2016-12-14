@@ -1,0 +1,22 @@
+{
+  "name": "where-filter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "where-filter.test.js",
+  "scripts": {
+    "pretest": "eslint .",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --timeout 30000"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-polyfill": "^6.20.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.12.1",
+    "eslint-config-defaults": "^9.0.0",
+    "mocha": "^3.2.0"
+  }
+}
