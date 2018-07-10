@@ -1,4 +1,3 @@
-'use strict';
 
 
 // Where-like filter to support syntax expressions like:
@@ -6,23 +5,24 @@
 // {and: [{a: 1}, {b: "2"}]}
 // {or: [{a: 1}, {b: "2"}]}
 
-var AND = 'and';
-var OR = 'or';
+const AND = 'and';
+const OR = 'or';
 
 function getValue(obj, path) {
+	/* eslint-disable-next-line eqeqeq */
 	if (obj == null) {
 		return undefined;
 	}
 
-	var keys = path.split('.');
-	var val = obj;
+	const keys = path.split('.');
+	let val = obj;
 
-	for (var i = 0, n = keys.length; i < n; i++) {
+	for (let i = 0, n = keys.length; i < n; i++) {
 		val = val[keys[i]];
+		/* eslint-disable-next-line eqeqeq */
 		if (val == null) {
 			return val;
 		}
-
 	}
 	return val;
 }
@@ -31,12 +31,14 @@ function getValue(obj, path) {
  * Compare two values
  * @param {*} val1 The 1st value
  * @param {*} val2 The 2nd value
- * @returns {number} 0: =, positive: >, negative <
+ * @return {number} 0: =, positive: >, negative <
  * @private
  */
 function compare(val1, val2) {
+	/* eslint-disable-next-line eqeqeq */
 	if (val1 == null || val2 == null) {
 		// Either val1 or val2 is null or undefined
+		/* eslint-disable-next-line eqeqeq */
 		return val1 == val2 ? 0 : NaN;
 	}
 	if (typeof val1 === 'number') {
@@ -49,6 +51,7 @@ function compare(val1, val2) {
 			if (val1 < val2) {
 				return -1;
 			} else {
+				/* eslint-disable-next-line eqeqeq */
 				if (val1 == val2) {
 					return 0;
 				}
@@ -60,11 +63,12 @@ function compare(val1, val2) {
 		return val1 - val2;
 	}
 	if (val1 instanceof Date) {
-		var result = val1 - val2;
+		const result = val1 - val2;
 
 		return result;
 	}
 	// Return NaN if we don't know how to compare
+	/* eslint-disable-next-line eqeqeq */
 	return val1 == val2 ? 0 : NaN;
 }
 
@@ -90,14 +94,14 @@ function toRegExp(pattern) {
 	if (pattern instanceof RegExp) {
 		return pattern;
 	}
-	var regex = '';
+	let regex = '';
 
 	// Escaping user input to be treated as a literal string within a regular expression
 	// https://developer.mozilla.org/en-US/docs/Web/
 	// JavaScript/Guide/Regular_Expressions#Writing_a_Regular_Expression_Pattern
 	pattern = pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-	for (var i = 0, n = pattern.length; i < n; i++) {
-		var char = pattern.charAt(i);
+	for (let i = 0, n = pattern.length; i < n; i++) {
+		const char = pattern.charAt(i);
 
 		if (char === '\\') {
 			i++; // Skip to next char
@@ -135,7 +139,8 @@ function test(example, value) {
 		}
 
 		if (example.inq) {
-			for (var i = 0; i < example.inq.length; i++) {
+			for (let i = 0; i < example.inq.length; i++) {
+				/* eslint-disable-next-line eqeqeq */
 				if (example.inq[i] == value) {
 					return true;
 				}
@@ -144,7 +149,8 @@ function test(example, value) {
 		}
 
 		if (example.nin) {
-			for (var i = 0; i < example.nin.length; i++) {
+			for (let i = 0; i < example.nin.length; i++) {
+				/* eslint-disable-next-line eqeqeq */
 				if (example.nin[i] == value) {
 					return false;
 				}
@@ -162,7 +168,7 @@ function test(example, value) {
 		}
 
 		if (example.like || example.nlike || example.ilike || example.nilike) {
-			var like = example.like || example.nlike || example.ilike || example.nilike;
+			let like = example.like || example.nlike || example.ilike || example.nilike;
 
 			if (typeof like === 'string') {
 				like = toRegExp(like);
@@ -191,8 +197,8 @@ function test(example, value) {
 	}
 
 	// not strict equality
-	return (example !== null ? example.toString() : example) ==
-		(value != null ? value.toString() : value);
+	/* eslint-disable-next-line eqeqeq */
+	return (example !== null ? example.toString() : example) == (value != null ? value.toString() : value);
 }
 
 function whereFilter(where) {
@@ -200,7 +206,7 @@ function whereFilter(where) {
 		return where;
 	}
 
-	var keys = Object.keys(where);
+	const keys = Object.keys(where);
 
 	return function(obj) {
 		return keys.every(function(key) {
@@ -219,10 +225,10 @@ function whereFilter(where) {
 				}
 			}
 
-			var value = getValue(obj, key);
+			const value = getValue(obj, key);
 
 			if (Array.isArray(value)) {
-				var matcher  = where[key];
+				const matcher = where[key];
 
 				// The following condition is for the case where we are querying with
 				// a neq filter, and when the value is an empty array ([]).
@@ -230,7 +236,7 @@ function whereFilter(where) {
 					return true;
 				}
 				return value.some(function(v, i) {
-					var cond = {};
+					const cond = {};
 
 					cond[i] = matcher;
 					return whereFilter(cond)(value);
@@ -243,17 +249,16 @@ function whereFilter(where) {
 
 			// If we have a composed key a.b and b would resolve to a property of an object inside an array
 			// then, we attempt to emulate mongo db matching. Helps for embedded relations
-			var dotIndex = key.indexOf('.');
-			var subValue = obj[key.substring(0, dotIndex)];
+			const dotIndex = key.indexOf('.');
+			const subValue = obj[key.substring(0, dotIndex)];
 
 			if (dotIndex !== -1) {
-				var subWhere = {};
-				var subKey = key.substring(dotIndex + 1);
+				const subWhere = {};
+				const subKey = key.substring(dotIndex + 1);
 
 				subWhere[subKey] = where[key];
 				if (Array.isArray(subValue)) {
 					return subValue.some(whereFilter(subWhere));
-
 				} else if (typeof subValue === 'object' && subValue !== null) {
 					return whereFilter(subWhere)(subValue);
 				}

@@ -4,7 +4,6 @@ import chai from 'chai';
 chai.should();
 
 context('whereFilter', () => {
-
 	let array;
 
 	beforeEach(() => {
@@ -17,21 +16,20 @@ context('whereFilter', () => {
 	});
 
 	it('should handle simple queries', () => {
-		let result = array.filter(whereFilter({symbol: 'IBM'}));
+		const result = array.filter(whereFilter({symbol: 'IBM'}));
 
 		result.length.should.be.equal(2);
 	});
 
 	it('should handle OR queries', () => {
-		let result = array.filter(whereFilter({or: [{symbol: 'IBM'}, {symbol: 'AAPL'}]}));
+		const result = array.filter(whereFilter({or: [{symbol: 'IBM'}, {symbol: 'AAPL'}]}));
 
 		result.length.should.be.equal(3);
 	});
 
 	it('should handle AND queries', () => {
-		let result = array.filter(whereFilter({and: [{symbol: 'IBM'}, {qty: {lt: '50'}}]}));
+		const result = array.filter(whereFilter({and: [{symbol: 'IBM'}, {qty: {lt: '50'}}]}));
 
 		result.length.should.be.equal(1);
 	});
-
 });
