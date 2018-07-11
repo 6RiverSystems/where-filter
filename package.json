@@ -11,7 +11,8 @@
     "commitmsg": "commitlint -e ${GIT_PARAMS}",
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --timeout 30000"
+    "test:single": "mocha --compilers js:babel-register --require babel-polyfill --timeout 30000",
+    "test": "npm run test:single -- --watch"
   },
   "author": "",
   "license": "MIT",
