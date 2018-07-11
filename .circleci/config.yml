@@ -64,7 +64,6 @@ jobs:
       - run:
           name: Publish
           command: |
-            ci_scripts/ci_tool.sh --setup_npm
             ci_scripts/ci_tool.sh --npm_publish
 
 workflows:
