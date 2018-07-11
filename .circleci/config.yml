@@ -64,7 +64,8 @@ jobs:
       - run:
           name: Publish
           command: |
-            ci_scripts/ci_tool.sh --npm_publish
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            npm publish
 
 workflows:
   version: 2
