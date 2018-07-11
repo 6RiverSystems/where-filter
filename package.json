@@ -11,7 +11,7 @@
     "commitmsg": "commitlint -e ${GIT_PARAMS}",
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test:single": "mocha --compilers js:babel-register --require babel-polyfill --timeout 30000",
+    "test:single": "nyc mocha --compilers js:babel-register --require babel-polyfill --timeout 30000",
     "test": "npm run test:single -- --watch"
   },
   "author": "",
@@ -29,6 +29,7 @@
     "eslint-config-defaults": "^9.0.0",
     "husky": "^0.14.3",
     "luxon": "^1.3.1",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2"
   }
 }
