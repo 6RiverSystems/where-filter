@@ -1,3 +1,6 @@
 {
-  "extends": "6river"
+  "extends": "6river",
+  "parserOptions": {
+		"sourceType": "module"
+  }
 }
