@@ -1,0 +1,84 @@
+version: 2
+jobs:
+  prep:
+    docker:
+      - image: circleci/node:9
+    steps:
+      - checkout
+      - run:
+          name: Set Up Environment
+          command: |
+            git submodule update --init
+            ci_scripts/ci_tool.sh --setup_npm
+
+      - restore_cache:
+          key: |
+            - dependency-cache-{{ checksum "package.json" }}
+            - dependency-cache-
+
+      - run:
+            name: Install Dependencies
+            command: npm install
+
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - .
+
+  lint:
+    docker:
+      - image: circleci/node:9
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Lint
+          command: npm run lint
+  tests:
+    docker:
+      - image: circleci/node:9
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Unit Tests
+          command: npm run test:single
+      - run:
+          name: Report Coverage
+          command: cat ./coverage/lcov.info | npx coveralls
+  publish:
+    docker:
+      - image: circleci/node:9
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Calculate Version
+          command: |
+            ci_scripts/ci_tool.sh --run_release
+      - run:
+          name: Publish
+          command: |
+            ci_scripts/ci_tool.sh --npm_publish
+
+workflows:
+  version: 2
+  test-publish:
+    jobs:
+      - prep
+      - lint:
+          requires:
+            - prep
+      - tests:
+          requires:
+            - prep
+      - publish:
+          requires:
+            - prep
+            - lint
+            - tests
