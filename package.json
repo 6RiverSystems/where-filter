@@ -1,22 +1,36 @@
 {
-  "name": "where-filter",
-  "version": "1.0.3",
-  "description": "",
+  "name": "@6river/where-filter",
+  "version": "0.0.0-development",
+  "description": "SQL where-like filter function builder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/6RiverSystems/where-filter.git"
+  },
   "main": "where-filter.js",
   "scripts": {
-    "pretest": "eslint .",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --timeout 30000"
+    "commitmsg": "commitlint -e ${GIT_PARAMS}",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test:single": "nyc mocha --compilers js:babel-register --require babel-polyfill --timeout 30000",
+    "test": "npm run test:single -- --watch"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^7.0.0",
+    "@commitlint/config-conventional": "^7.0.1",
     "babel-cli": "^6.18.0",
     "babel-polyfill": "^6.20.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.18.0",
-    "chai": "^3.5.0",
-    "eslint": "^3.12.1",
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.2",
+    "eslint": "^5.1.0",
+    "eslint-config-6river": "^1.3.2",
     "eslint-config-defaults": "^9.0.0",
-    "mocha": "^3.2.0"
+    "husky": "^0.14.3",
+    "luxon": "^1.3.1",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2"
   }
 }
