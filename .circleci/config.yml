@@ -50,7 +50,7 @@ jobs:
           command: npm run test:single
       - run:
           name: Report Coverage
-          command: cat ./coverage/lcov.info | npx coveralls
+          command: bash <(curl -s https://codecov.io/bash)
   publish:
     docker:
       - image: circleci/node:9
