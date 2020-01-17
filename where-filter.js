@@ -230,6 +230,17 @@ function whereFilter(where) {
 			if (Array.isArray(value)) {
 				const matcher = where[key];
 
+				if (matcher.some) {
+					return value.some(function(v) {
+						return whereFilter(matcher.some)(v);
+					});
+				}
+				if (matcher.all) {
+					return value.every(function(v) {
+						return whereFilter(matcher.all)(v);
+					});
+				}
+
 				// The following condition is for the case where we are querying with
 				// a neq filter, and when the value is an empty array ([]).
 				if (matcher.neq !== undefined && value.length <= 0) {
