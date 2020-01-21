@@ -116,6 +116,42 @@ context('whereFilter', () => {
 		assert.isTrue(result);
 	});
 
+	it('ALL and SOME nest', () => {
+		const condition = {
+			lines: {
+				some: {
+					tasks: {
+						all: {
+							status: 'DONE',
+						},
+					},
+				},
+			},
+		};
+		const data = {
+			lines: [
+				{
+					tasks: [
+						{
+							status: 'DONE',
+						},
+					],
+				},
+				{
+					tasks: [
+						{
+							status: 'NOT_DONE',
+						},
+					],
+				},
+			],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
 	it('still works with legacy implicit scalar some matching (matches)', function() {
 		const condition = {
 			lines: 'good',
