@@ -241,6 +241,9 @@ function whereFilter(where) {
 					});
 				}
 
+				// below is code for doing `arrayOfScalars: singleContainedValue`
+				// or an `neq` variant of that
+
 				// The following condition is for the case where we are querying with
 				// a neq filter, and when the value is an empty array ([]).
 				if (matcher.neq !== undefined && value.length <= 0) {

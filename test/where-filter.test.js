@@ -116,6 +116,32 @@ context('whereFilter', () => {
 		assert.isTrue(result);
 	});
 
+	it('still works with legacy implicit scalar some matching (matches)', function() {
+		const condition = {
+			lines: 'good',
+		};
+		const data = {
+			lines: ['bad', 'good'],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
+	it('still works with legacy implicit scalar some matching (no match)', function() {
+		const condition = {
+			lines: 'good',
+		};
+		const data = {
+			lines: ['bad', 'purple'],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isFalse(result);
+	});
+
 	describe('date handling', () => {
 		const date = DateTime.local();
 		const dateFixtures = [
