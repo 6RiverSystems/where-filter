@@ -1,4 +1,59 @@
 # where-filter
 
-[![CircleCI](https://circleci.com/gh/6RiverSystems/where-filter.svg?style=svg&circle-token=4b22c00aef764d4a1e9e1f3cd8ec1a5da3591963)](https://circleci.com/gh/6RiverSystems/where-filter)
-[![codecov](https://codecov.io/gh/6RiverSystems/where-filter/branch/master/graph/badge.svg)](https://codecov.io/gh/6RiverSystems/where-filter)
+Effectively a fork of [loopback-filters](https://github.com/strongloop/loopback-filters)
+
+Works according to [Loopback Where Criteria spec](https://loopback.io/doc/en/lb3/Where-filter.html). With the additional support for array predicates some and all.
+
+## some
+```javascript
+const condition = {
+  lines: {
+    some: {
+      status: 'good',
+    }
+  }
+};
+
+const data = {
+  lines: [
+    {
+      status: 'good',
+    },
+    {
+      status: 'bad',
+    }
+  ]
+};
+
+const result = whereFilter(condition)(data);
+
+console.log(result);
+// true
+```
+
+## all
+```javascript
+const condition = {
+  lines: {
+    all: {
+      status: 'good',
+    }
+  }
+};
+
+const data = {
+  lines: [
+    {
+      status: 'good',
+    },
+    {
+      status: 'good',
+    }
+  ]
+};
+
+const result = whereFilter(condition)(data);
+
+console.log(result);
+// true
+```
