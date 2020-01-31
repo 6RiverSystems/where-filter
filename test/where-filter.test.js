@@ -1,5 +1,5 @@
 import whereFilter from '../where-filter';
-import {expect, should} from 'chai';
+import {expect, should, assert} from 'chai';
 import {DateTime} from 'luxon';
 
 should();
@@ -32,6 +32,150 @@ context('whereFilter', () => {
 		const result = array.filter(whereFilter({and: [{symbol: 'IBM'}, {qty: {lt: '50'}}]}));
 
 		result.length.should.be.equal(1);
+	});
+
+	it('SOME query returns true when array property has at least one matching entry', () => {
+		const condition = {
+			lines: {
+				some: {
+					status: 'good',
+				},
+			},
+		};
+		const data = {
+			lines: [
+				{
+					status: 'good',
+				},
+				{
+					status: 'bad',
+				},
+			],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
+	it('SOME query returns false when array property is empty', () => {
+		const condition = {
+			lines: {
+				some: {
+					status: 'good',
+				},
+			},
+		};
+		const data = {
+			lines: [],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isFalse(result);
+	});
+
+	it('ALL query returns true when array property has no non-matching entries', () => {
+		const condition = {
+			lines: {
+				all: {
+					status: 'good',
+				},
+			},
+		};
+		const data = {
+			lines: [
+				{
+					status: 'good',
+				},
+				{
+					status: 'good',
+				},
+			],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
+	it('ALL query returns true when array property is empty', () => {
+		const condition = {
+			lines: {
+				all: {
+					status: 'good',
+				},
+			},
+		};
+		const data = {
+			lines: [],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
+	it('ALL and SOME nest', () => {
+		const condition = {
+			lines: {
+				some: {
+					tasks: {
+						all: {
+							status: 'DONE',
+						},
+					},
+				},
+			},
+		};
+		const data = {
+			lines: [
+				{
+					tasks: [
+						{
+							status: 'DONE',
+						},
+					],
+				},
+				{
+					tasks: [
+						{
+							status: 'NOT_DONE',
+						},
+					],
+				},
+			],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
+	it('still works with legacy implicit scalar some matching (matches)', function() {
+		const condition = {
+			lines: 'good',
+		};
+		const data = {
+			lines: ['bad', 'good'],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isTrue(result);
+	});
+
+	it('still works with legacy implicit scalar some matching (no match)', function() {
+		const condition = {
+			lines: 'good',
+		};
+		const data = {
+			lines: ['bad', 'purple'],
+		};
+
+		const result = whereFilter(condition)(data);
+
+		assert.isFalse(result);
 	});
 
 	describe('date handling', () => {
