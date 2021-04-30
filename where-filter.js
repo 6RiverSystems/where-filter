@@ -14,6 +14,8 @@ function getValue(obj, path) {
 		return undefined;
 	}
 
+	if (path.indexOf('.') < 0) return obj[path];
+
 	const keys = path.split('.');
 	let val = obj;
 
