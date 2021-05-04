@@ -86,4 +86,4 @@ workflows:
             - prep
             - lint
             - tests
-          context: 6rs-circle
+          context: 6rs-public-npm
