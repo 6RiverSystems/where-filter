@@ -13,6 +13,7 @@ context('whereFilter', () => {
 			{id: 'order#9', qty: 90, symbol: 'AAPL'},
 			{id: 'order#2', qty: 10, symbol: 'GOOG'},
 			{id: 'order#5', qty: 60, symbol: 'IBM'},
+			{id: 'order#7', symbol: {nyse: 'AMD'}},
 		];
 	});
 
@@ -20,6 +21,28 @@ context('whereFilter', () => {
 		const result = array.filter(whereFilter({symbol: 'IBM'}));
 
 		result.length.should.be.equal(2);
+	});
+
+	it('should handle simple query with dotted path', () => {
+		const result = array.filter(whereFilter({'symbol.nyse': 'AMD'}));
+		assert.equal(result[0].id, 'order#7');
+	});
+
+	it('should handle simple nested query', () => {
+		const result = array.filter(whereFilter({symbol: {nyse: 'AMD'}}));
+		assert.equal(result[0].id, 'order#7');
+	});
+
+	it('should match non-array AND property', () => {
+		const result = [{id: 1, and: 1}, {id: 2, and: 2}].filter(whereFilter({and: 2}));
+		assert.equal(result.length, 1);
+		assert.equal(result[0].id, 2);
+	});
+
+	it('should match non-array OR property', () => {
+		const result = [{id: 1, or: 1}, {id: 2, or: 2}].filter(whereFilter({or: 2}));
+		assert.equal(result.length, 1);
+		assert.equal(result[0].id, 2);
 	});
 
 	it('should handle OR queries', () => {
