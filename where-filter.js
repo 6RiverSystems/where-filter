@@ -269,9 +269,9 @@ function whereFilter(where) {
 			// If we have a composed key a.b and b would resolve to a property of an object inside an array
 			// then, we attempt to emulate mongo db matching. Helps for embedded relations
 			const dotIndex = key.indexOf('.');
-			const subValue = obj[key.substring(0, dotIndex)];
-
 			if (dotIndex !== -1) {
+				const subValue = obj[key.substring(0, dotIndex)];
+
 				const subWhere = {};
 				const subKey = key.substring(dotIndex + 1);
 
