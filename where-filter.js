@@ -14,6 +14,8 @@ function getValue(obj, path) {
 		return undefined;
 	}
 
+	if (path.indexOf('.') < 0) return obj[path];
+
 	const keys = path.split('.');
 	let val = obj;
 
@@ -194,6 +196,9 @@ function test(example, value) {
 		if (testInEquality(example, value)) {
 			return true;
 		}
+
+		// unlike mongo, test() does not match objects {a: 1} == {a: 1} and {a: 1} != {b: 1}
+		// The fall-through default is to match as strings, often "[object Object]"
 	}
 
 	// not strict equality
@@ -264,9 +269,9 @@ function whereFilter(where) {
 			// If we have a composed key a.b and b would resolve to a property of an object inside an array
 			// then, we attempt to emulate mongo db matching. Helps for embedded relations
 			const dotIndex = key.indexOf('.');
-			const subValue = obj[key.substring(0, dotIndex)];
-
 			if (dotIndex !== -1) {
+				const subValue = obj[key.substring(0, dotIndex)];
+
 				const subWhere = {};
 				const subKey = key.substring(dotIndex + 1);
 

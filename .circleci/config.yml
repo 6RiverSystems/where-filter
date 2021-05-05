@@ -17,8 +17,8 @@ jobs:
             - dependency-cache-
 
       - run:
-            name: Install Dependencies
-            command: npm install
+          name: Install Dependencies
+          command: npm install
 
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
@@ -71,15 +71,19 @@ workflows:
   version: 2
   test-publish:
     jobs:
-      - prep
+      - prep:
+          context: 6rs-circle
       - lint:
           requires:
             - prep
+          context: 6rs-circle
       - tests:
           requires:
             - prep
+          context: 6rs-circle
       - publish:
           requires:
             - prep
             - lint
             - tests
+          context: 6rs-public-npm
