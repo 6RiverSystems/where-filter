@@ -196,6 +196,9 @@ function test(example, value) {
 		if (testInEquality(example, value)) {
 			return true;
 		}
+
+		// unlike mongo, test() does not match objects {a: 1} == {a: 1} and {a: 1} != {b: 1}
+		// The fall-through default is to match as strings, often "[object Object]"
 	}
 
 	// not strict equality
