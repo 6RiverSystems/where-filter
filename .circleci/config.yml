@@ -53,12 +53,7 @@ jobs:
       - attach_workspace:
           at: ./
       - sixrs-gke/run-release
-      - run:
-          name: Publish
-          command: |
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish
-      # - sixrs-gke/npm-public-publish
+      - sixrs-gke/npm-public-publish
 
 workflows:
   version: 2
