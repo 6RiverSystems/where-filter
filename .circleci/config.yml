@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  sixrs-gke: sixriversystems/sixrs-gke@3
+  sixrs-gke: sixriversystems/sixrs-gke@dev:alpha
 jobs:
   prep:
     docker:
@@ -53,7 +53,7 @@ jobs:
       - attach_workspace:
           at: ./
       - sixrs-gke/run-release
-      - sixrs-gke/npm-publish
+      - sixrs-gke/npm-public-publish
 
 workflows:
   version: 2
