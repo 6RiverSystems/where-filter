@@ -1,16 +1,13 @@
-version: 2
+version: 2.1
+orbs:
+  sixrs-gke: sixriversystems/sixrs-gke@3
 jobs:
   prep:
     docker:
       - image: circleci/node:9
     steps:
       - checkout
-      - run:
-          name: Set Up Environment
-          command: |
-            git submodule update --init
-            ci_scripts/ci_tool.sh --setup_npm
-
+      - sixrs-gke/setup-private-npm
       - restore_cache:
           key: |
             - dependency-cache-{{ checksum "package.json" }}
@@ -48,24 +45,15 @@ jobs:
       - run:
           name: Unit Tests
           command: npm run test:single
-      - run:
-          name: Report Coverage
-          command: bash <(curl -s https://codecov.io/bash)
+      - sixrs-gke/codecov
   publish:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:12
     steps:
       - attach_workspace:
           at: ./
-      - run:
-          name: Calculate Version
-          command: |
-            ci_scripts/ci_tool.sh --run_release
-      - run:
-          name: Publish
-          command: |
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish
+      - sixrs-gke/run-release
+      - sixrs-gke/npm-public-publish
 
 workflows:
   version: 2
