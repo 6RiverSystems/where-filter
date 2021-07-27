@@ -215,7 +215,8 @@ function whereFilter(where) {
 
 	return function(obj) {
 		return keys.every(function(key) {
-			if (key !== AND && key !== OR && where[key] === obj[key]) return true;
+			// the value matches the expected value only for string/number/boolean/null
+			if (where[key] === obj[key]) return true;
 
 			if (key === AND || key === OR) {
 				if (Array.isArray(where[key])) {
