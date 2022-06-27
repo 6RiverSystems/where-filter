@@ -48,7 +48,7 @@ jobs:
       - sixrs-gke/codecov
   publish:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:14.17.6
     steps:
       - attach_workspace:
           at: ./
@@ -70,6 +70,10 @@ workflows:
             - prep
           context: 6rs-circle
       - publish:
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - prep
             - lint
