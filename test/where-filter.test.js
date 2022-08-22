@@ -23,6 +23,12 @@ context('whereFilter', () => {
 		result.length.should.be.equal(2);
 	});
 
+	it('should handle explicity equality check', () => {
+		const result = array.filter(whereFilter({symbol: {eq: 'IBM'}}));
+
+		result.length.should.be.equal(2);
+	});
+
 	it('should handle simple query with dotted path', () => {
 		const result = array.filter(whereFilter({'symbol.nyse': 'AMD'}));
 		assert.equal(result[0].id, 'order#7');

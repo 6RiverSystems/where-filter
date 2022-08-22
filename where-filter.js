@@ -136,6 +136,10 @@ function test(example, value) {
 	}
 
 	if (typeof example === 'object' && example !== null) {
+		if (example.eq) {
+			return value === example.eq;
+		}
+
 		if (example.regexp) {
 			return value ? value.match(example.regexp) : false;
 		}
