@@ -18,9 +18,28 @@ context('whereFilter', () => {
 	});
 
 	it('should handle simple queries', () => {
-		const result = array.filter(whereFilter({symbol: 'IBM'}));
+		// canonical == {name: value}
+		assert.equal(array.filter(whereFilter({symbol: 'IBM'})).length, 2);
 
-		result.length.should.be.equal(2);
+		// alternate == {name: {eq: value}}
+		assert.equal(array.filter(whereFilter({symbol: {eq: 'IBM'}})).length, 2);
+
+		// not-equal != {name: {neq: value}}
+		// note that an object value (symbol: {}) is converted and compared as "[object Object]"
+		assert.equal(array.filter(whereFilter({symbol: {neq: 'IBM'}})).length, 3);
+	});
+
+	it('should handle simple named relational operators', () => {
+		assert.equal(array.filter(whereFilter({qty: {eq: 10}})).length, 2);
+		assert.equal(array.filter(whereFilter({qty: {eq: 60}})).length, 1);
+
+		assert.equal(array.filter(whereFilter({qty: {neq: 10}})).length, 3);
+		assert.equal(array.filter(whereFilter({qty: {neq: 60}})).length, 4);
+
+		assert.equal(array.filter(whereFilter({qty: {lt: 60}})).length, 2);
+		assert.equal(array.filter(whereFilter({qty: {lte: 60}})).length, 3);
+		assert.equal(array.filter(whereFilter({qty: {gt: 60}})).length, 1);
+		assert.equal(array.filter(whereFilter({qty: {gte: 60}})).length, 2);
 	});
 
 	it('should handle simple query with dotted path', () => {
@@ -199,6 +218,24 @@ context('whereFilter', () => {
 		const result = whereFilter(condition)(data);
 
 		assert.isFalse(result);
+	});
+
+	it('matches values in data array', () => {
+		const data = {colors: ['red', 'white']};
+
+		// when value present
+		assert.isTrue(whereFilter({colors: 'red'})(data)); // matched red
+		assert.isTrue(whereFilter({colors: {eq: 'red'}})(data)); // matched red
+		assert.isTrue(whereFilter({colors: {neq: 'red'}})(data)); // matched white
+
+		// when value not present
+		assert.isFalse(whereFilter({colors: 'green'})(data)); // no green
+		assert.isTrue(whereFilter({colors: {neq: 'green'}})(data)); // matched red,white
+		assert.isTrue(whereFilter({or: [{colors: {neq: 'red'}}, {colors: {neq: 'white'}}]})(data)); // matched white
+
+		// NOTE: the below does not fail because all conditions pass, matched by (a different) data element
+		// This is a weird edge case, unclear how to resolve, because the conditions can be totally independent.
+		assert.isTrue(whereFilter({and: [{colors: {neq: 'red'}}, {colors: {neq: 'white'}}]})(data));
 	});
 
 	describe('date handling', () => {
