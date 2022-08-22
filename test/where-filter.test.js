@@ -23,7 +23,7 @@ context('whereFilter', () => {
 		result.length.should.be.equal(2);
 	});
 
-	it('should handle explicity equality check', () => {
+	it('should handle explicit equality check', () => {
 		const result = array.filter(whereFilter({symbol: {eq: 'IBM'}}));
 
 		result.length.should.be.equal(2);
