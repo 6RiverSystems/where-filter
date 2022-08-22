@@ -5,9 +5,6 @@
 // {and: [{a: 1}, {b: "2"}]}
 // {or: [{a: 1}, {b: "2"}]}
 
-const AND = 'and';
-const OR = 'or';
-
 function getValue(obj, path) {
 	/* eslint-disable-next-line eqeqeq */
 	if (obj == null) {
@@ -164,6 +161,10 @@ function test(example, value) {
 			return compare(example.neq, value) !== 0;
 		}
 
+		if ('eq' in example) {
+			return compare(example.eq, value) === 0;
+		}
+
 		if ('between' in example) {
 			return testInEquality({gte: example.between[0]}, value) &&
 				testInEquality({lte: example.between[1]}, value);
@@ -202,6 +203,7 @@ function test(example, value) {
 	}
 
 	// not strict equality
+	// CAUTION: objects are converted and compared as strings, ie "[object Object]"
 	/* eslint-disable-next-line eqeqeq */
 	return (example !== null ? example.toString() : example) == (value != null ? value.toString() : value);
 }
@@ -218,14 +220,14 @@ function whereFilter(where) {
 			// the expected value can identity-match only if value is string/number/boolean/null
 			if (where[key] === obj[key]) return true;
 
-			if (key === AND || key === OR) {
+			if (key === 'and' || key === 'or') {
 				if (Array.isArray(where[key])) {
-					if (key === AND) {
+					if (key === 'and') {
 						return where[key].every(function(cond) {
 							return whereFilter(cond)(obj);
 						});
 					}
-					if (key === OR) {
+					if (key === 'or') {
 						return where[key].some(function(cond) {
 							return whereFilter(cond)(obj);
 						});
@@ -254,6 +256,9 @@ function whereFilter(where) {
 
 				// The following condition is for the case where we are querying with
 				// a neq filter, and when the value is an empty array ([]).
+				// the empty array [] matches all neq values
+				// CAUTION: when an array of and-conditions is applied to an array, the test
+				// will pass if each condition is matched by _any_ element in the array.
 				if (matcher.neq !== undefined && value.length <= 0) {
 					return true;
 				}
