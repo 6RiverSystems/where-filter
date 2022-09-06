@@ -51,6 +51,10 @@ context('whereFilter', () => {
 			// note that sql anchors LIKE patterns at both ^ and $, but where-filter does not
 			assert.equal(whereFilter({x: {like: 'foo%'}})({x: 'pad foobar pad'}), true);
 
+			assert.equal(whereFilter({x: {like: '%bar'}})({x: 'bar'}), true);
+			assert.equal(whereFilter({x: {like: '%bar'}})({x: 'foobar'}), true);
+			assert.equal(whereFilter({x: {like: '%bar'}})({x: 'foo'}), false);
+
 			assert.equal(whereFilter({x: {like: 'fo_'}})({x: 'foo'}), true);
 			assert.equal(whereFilter({x: {like: 'fo_'}})({x: 'foobar'}), true);
 			assert.equal(whereFilter({x: {like: 'fo_'}})({x: 'bar'}), false);
