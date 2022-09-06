@@ -98,25 +98,25 @@ function toRegExp(pattern) {
 	// Escaping user input to be treated as a literal string within a regular expression
 	// https://developer.mozilla.org/en-US/docs/Web/
 	// JavaScript/Guide/Regular_Expressions#Writing_a_Regular_Expression_Pattern
-	pattern = pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
+	// pattern = pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
+
+	const metachars = '.*+?^=!:${}()|\[\]\/\\';
 	for (let i = 0, n = pattern.length; i < n; i++) {
 		const char = pattern.charAt(i);
 
 		if (char === '\\') {
 			i++; // Skip to next char
-			if (i < n) {
-				regex += pattern.charAt(i);
-			}
-			continue;
+			// match backslash-escaped chars verbatim, escape them in the regex too
+			// but a trailing backslash only matches itself
+			regex += i < n ? '\\' + pattern.charAt(i) : '\\\\';
 		} else if (char === '%') {
+			// sql substring wildcard
 			regex += '.*';
 		} else if (char === '_') {
+			// sql single-char wildcard
 			regex += '.';
-		} else if (char === '.') {
-			regex += '\\.';
-		} else if (char === '*') {
-			regex += '\\*';
 		} else {
+			// all other chars, including metachars, included in the regex as-is
 			regex += char;
 		}
 	}

@@ -42,6 +42,54 @@ context('whereFilter', () => {
 		assert.equal(array.filter(whereFilter({qty: {gte: 60}})).length, 2);
 	});
 
+	describe('wildcards and metacharacters', () => {
+		it('should match sql meta-characters', () => {
+			assert.equal(whereFilter({x: {like: 'foo%'}})({x: 'foo'}), true);
+			assert.equal(whereFilter({x: {like: 'foo%'}})({x: 'foobar'}), true);
+			assert.equal(whereFilter({x: {like: 'foo%'}})({x: 'bar'}), false);
+
+			// note that sql anchors LIKE patterns at both ^ and $, but where-filter does not
+			assert.equal(whereFilter({x: {like: 'foo%'}})({x: 'pad foobar pad'}), true);
+
+			assert.equal(whereFilter({x: {like: 'fo_'}})({x: 'foo'}), true);
+			assert.equal(whereFilter({x: {like: 'fo_'}})({x: 'foobar'}), true);
+			assert.equal(whereFilter({x: {like: 'fo_'}})({x: 'bar'}), false);
+		});
+
+		it('should match regular expression patterns', () => {
+			assert.equal(array.filter(whereFilter({id: {like: '^order#.$'}})).length, 5);
+			assert.equal(array.filter(whereFilter({id: {like: 'order#.*'}})).length, 5);
+			assert.equal(array.filter(whereFilter({id: {like: '.*'}})).length, 5);
+			assert.equal(array.filter(whereFilter({id: {like: 'order.[127]'}})).length, 3);
+			assert.equal(array.filter(whereFilter({id: {like: '^rder'}})).length, 0);
+			assert.equal(array.filter(whereFilter({id: {like: 'rder.99$'}})).length, 0);
+
+			assert.equal(array.filter(whereFilter({symbol: {like: '[AB]'}})).length, 3);
+			assert.equal(array.filter(whereFilter({symbol: {like: '[*]'}})).length, 0);
+			assert.equal(array.filter(whereFilter({symbol: {like: 'AAA+'}})).length, 0);
+			assert.equal(array.filter(whereFilter({symbol: {like: 'AAA*'}})).length, 1);
+		});
+
+		it('should match verbatim regular expression metacharacters', () => {
+			const metachars = '.*+?^=!:${}()|\[\]\/\\';
+			const escapedMetachars = metachars.replace(/(.)/g, '\\$1');
+			assert.equal(whereFilter({x: {like: escapedMetachars}})({x: `${metachars} pad`}), true);
+
+			assert.equal(whereFilter({x: {like: 'foo\\%bar'}})({x: 'foo%bar'}), true);
+			assert.equal(whereFilter({x: {like: 'foo\\%bar'}})({x: 'foo bar'}), false);
+
+			assert.equal(whereFilter({x: {like: 'foo\\_bar'}})({x: 'foo_bar'}), true);
+			assert.equal(whereFilter({x: {like: 'foo\\_bar'}})({x: 'foo bar'}), false);
+		});
+
+		it('a trailing backslash only matches itself', () => {
+			assert.equal(whereFilter({x: {like: '%\\'}})({x: 'foo\\'}), true);
+			assert.equal(whereFilter({x: {like: '%\\'}})({x: 'foo '}), false);
+			assert.equal(whereFilter({x: {like: 'foo\\'}})({x: 'foo \\'}), false);
+			assert.equal(whereFilter({x: {like: 'foo \\'}})({x: 'foo \\'}), true);
+		});
+	});
+
 	it('should handle simple query with dotted path', () => {
 		const result = array.filter(whereFilter({'symbol.nyse': 'AMD'}));
 		assert.equal(result[0].id, 'order#7');
