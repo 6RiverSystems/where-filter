@@ -74,6 +74,15 @@ context('whereFilter', () => {
 			assert.equal(array.filter(whereFilter({symbol: {like: 'AAA*'}})).length, 1);
 		});
 
+		it('should match PCRE regular expression patterns', () => {
+			assert.equal(whereFilter({x: {like: 'f\\o\\w+#\\d'}})({x: 'foobar#5'}), true);
+			assert.equal(whereFilter({x: {like: 'f\\o\\w{4}#\\d'}})({x: 'foobar#5'}), true);
+			assert.equal(whereFilter({x: {like: 'f\\o\\w{1,10}#\\d'}})({x: 'foobar#5'}), true);
+
+			assert.equal(whereFilter({x: {like: 'f\\o\\w{1,2}#\\d'}})({x: 'foobar#5'}), false);
+			assert.equal(whereFilter({x: {like: 'f\\o\\w+#\\d\\d'}})({x: 'foobar#5'}), false);
+		});
+
 		it('should match verbatim regular expression metacharacters', () => {
 			const metachars = '.*+?^=!:${}()|\[\]\/\\';
 			const escapedMetachars = metachars.replace(/(.)/g, '\\$1');
