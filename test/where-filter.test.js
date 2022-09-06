@@ -29,17 +29,31 @@ context('whereFilter', () => {
 		assert.equal(array.filter(whereFilter({symbol: {neq: 'IBM'}})).length, 3);
 	});
 
-	it('should handle simple named relational operators', () => {
-		assert.equal(array.filter(whereFilter({qty: {eq: 10}})).length, 2);
-		assert.equal(array.filter(whereFilter({qty: {eq: 60}})).length, 1);
-
-		assert.equal(array.filter(whereFilter({qty: {neq: 10}})).length, 3);
-		assert.equal(array.filter(whereFilter({qty: {neq: 60}})).length, 4);
-
+	it('should handle other simple named relational operators', () => {
+		// lt/lte/gt/gte
 		assert.equal(array.filter(whereFilter({qty: {lt: 60}})).length, 2);
 		assert.equal(array.filter(whereFilter({qty: {lte: 60}})).length, 3);
 		assert.equal(array.filter(whereFilter({qty: {gt: 60}})).length, 1);
 		assert.equal(array.filter(whereFilter({qty: {gte: 60}})).length, 2);
+
+		// between
+		assert.equal(array.filter(whereFilter({qty: {between: [10, 60]}})).length, 3);
+
+		// like/nlike/ilike/nilike
+		assert.equal(array.filter(whereFilter({symbol: {like: 'OOG'}})).length, 1);
+		assert.equal(array.filter(whereFilter({symbol: {like: 'oog'}})).length, 0);
+		assert.equal(array.filter(whereFilter({symbol: {nlike: 'OOG'}})).length, 4);
+		assert.equal(array.filter(whereFilter({symbol: {nlike: 'oog'}})).length, 5);
+		assert.equal(array.filter(whereFilter({symbol: {ilike: 'OoG'}})).length, 1);
+		assert.equal(array.filter(whereFilter({symbol: {nilike: 'oOg'}})).length, 4);
+
+		// like with regex (it's just looking for any character that matches)
+		assert.equal(array.filter(whereFilter({id: {like: '\\w+\.\\d'}})).length, 5);
+		assert.equal(array.filter(whereFilter({symbol: {like: '\\w+\.\\d'}})).length, 0);
+
+		// inq, nin
+		assert.equal(array.filter(whereFilter({symbol: {inq: ['IBM', 'GOOG']}})).length, 3);
+		assert.equal(array.filter(whereFilter({symbol: {nin: ['IBM', 'GOOG']}})).length, 2);
 	});
 
 	describe('wildcards and metacharacters', () => {
