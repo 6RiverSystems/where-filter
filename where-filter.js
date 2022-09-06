@@ -100,7 +100,6 @@ function toRegExp(pattern) {
 	// JavaScript/Guide/Regular_Expressions#Writing_a_Regular_Expression_Pattern
 	// pattern = pattern.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
 
-	const metachars = '.*+?^=!:${}()|\[\]\/\\';
 	for (let i = 0, n = pattern.length; i < n; i++) {
 		const char = pattern.charAt(i);
 
