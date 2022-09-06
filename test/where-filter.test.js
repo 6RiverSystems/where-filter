@@ -78,6 +78,7 @@ context('whereFilter', () => {
 			const metachars = '.*+?^=!:${}()|\[\]\/\\';
 			const escapedMetachars = metachars.replace(/(.)/g, '\\$1');
 			assert.equal(whereFilter({x: {like: escapedMetachars}})({x: `${metachars} pad`}), true);
+			assert.equal(whereFilter({x: {like: escapedMetachars}})({x: metachars.replace('[', 'x')}), false);
 
 			assert.equal(whereFilter({x: {like: 'foo\\%bar'}})({x: 'foo%bar'}), true);
 			assert.equal(whereFilter({x: {like: 'foo\\%bar'}})({x: 'foo bar'}), false);
