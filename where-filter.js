@@ -44,6 +44,10 @@ function compare(val1, val2) {
 		return val1 - val2;
 	}
 	if (typeof val1 === 'string') {
+		if (val2 instanceof Date) {
+			val1 = Date.parse(val1);
+			return val1 - val2;
+		}
 		if (val1 > val2) {
 			return 1;
 		} else {
@@ -65,9 +69,7 @@ function compare(val1, val2) {
 		if (typeof val2 === 'string') {
 			val2 = Date.parse(val2);
 		}
-		const result = val1 - val2;
-
-		return result;
+		return val1 - val2;
 	}
 	// Return NaN if we don't know how to compare
 	/* eslint-disable-next-line eqeqeq */
