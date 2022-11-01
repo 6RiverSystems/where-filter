@@ -349,5 +349,17 @@ context('whereFilter', () => {
 			const result = dateFixtures.filter(whereFilter({createdAt: {gte: date.toJSDate()}}));
 			expect(result).to.have.lengthOf(3);
 		});
+
+		describe('if specified as string', () => {
+			it('should filter "greater than or equal to" dates correctly', () => {
+				const result = dateFixtures.filter(whereFilter({createdAt: {gte: date.toJSDate().toISOString()}}));
+				expect(result).to.have.lengthOf(3);
+			});
+
+			it('should filter "should return no matches if string is not Date-parsable', () => {
+				const result = dateFixtures.filter(whereFilter({createdAt: {gte: 'foo'}}));
+				expect(result).to.have.lengthOf(0);
+			});
+		});
 	});
 });

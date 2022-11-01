@@ -62,6 +62,9 @@ function compare(val1, val2) {
 		return val1 - val2;
 	}
 	if (val1 instanceof Date) {
+		if (typeof val2 === 'string') {
+			val2 = Date.parse(val2);
+		}
 		const result = val1 - val2;
 
 		return result;
