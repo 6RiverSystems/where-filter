@@ -74,6 +74,7 @@ workflows:
             branches:
               only:
                 - main
+                - feat/date-conversion
           requires:
             - prep
             - lint
