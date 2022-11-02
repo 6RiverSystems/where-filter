@@ -1,6 +1,7 @@
 import whereFilter from '../where-filter';
 import {expect, should, assert} from 'chai';
 import {DateTime} from 'luxon';
+import {beforeEach} from 'mocha';
 
 should();
 
@@ -363,7 +364,7 @@ context('whereFilter', () => {
 		];
 
 		it('should compare equivalent dates correctly', () => {
-			const result = whereFilter({createdAt: date.toJSDate()})({createdAt: date.toJSDate()});
+			const result = whereFilter({createdAt: date.toJSDate().toISOString()})({createdAt: date.toJSDate()});
 
 			expect(result).to.be.true;
 		});
@@ -400,7 +401,7 @@ context('whereFilter', () => {
 		];
 
 		it('should compare equivalent dates correctly', () => {
-			const result = whereFilter({createdAt: date.toJSDate()})({createdAt: date.toJSDate()});
+			const result = whereFilter({createdAt: date.toJSDate()})({createdAt: date.toJSDate().toISOString()});
 
 			expect(result).to.be.true;
 		});
