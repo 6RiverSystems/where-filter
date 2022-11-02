@@ -369,6 +369,14 @@ context('whereFilter', () => {
 			expect(result).to.be.true;
 		});
 
+		it('should not match strings that can not be converted to Date', () => {
+			expect(dateFixtures.filter(whereFilter({createdAt: 'foo'}))).to.have.lengthOf(0);
+			expect(dateFixtures.filter(whereFilter({createdAt: {lt: 'foo'}}))).to.have.lengthOf(0);
+			expect(dateFixtures.filter(whereFilter({createdAt: {lte: 'foo'}}))).to.have.lengthOf(0);
+			expect(dateFixtures.filter(whereFilter({createdAt: {gt: 'foo'}}))).to.have.lengthOf(0);
+			expect(dateFixtures.filter(whereFilter({createdAt: {gte: 'foo'}}))).to.have.lengthOf(0);
+		});
+
 		it('should filter "less than" dates correctly', () => {
 			const result = dateFixtures.filter(whereFilter({createdAt: {lt: date.toJSDate().toISOString()}}));
 			expect(result).to.have.lengthOf(2);
