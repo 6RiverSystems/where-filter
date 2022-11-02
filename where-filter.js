@@ -44,6 +44,10 @@ function compare(val1, val2) {
 		return val1 - val2;
 	}
 	if (typeof val1 === 'string') {
+		if (val2 instanceof Date) {
+			val1 = new Date(val1);
+			return val1 - val2;
+		}
 		if (val1 > val2) {
 			return 1;
 		} else {
@@ -62,9 +66,10 @@ function compare(val1, val2) {
 		return val1 - val2;
 	}
 	if (val1 instanceof Date) {
-		const result = val1 - val2;
-
-		return result;
+		if (typeof val2 === 'string') {
+			val2 = new Date(val2);
+		}
+		return val1 - val2;
 	}
 	// Return NaN if we don't know how to compare
 	/* eslint-disable-next-line eqeqeq */
@@ -199,6 +204,14 @@ function test(example, value) {
 
 		// unlike mongo, test() does not match objects {a: 1} == {a: 1} and {a: 1} != {b: 1}
 		// The fall-through default is to match as strings, often "[object Object]"
+	}
+
+	// Edge case comparing Date and string
+	if ((value instanceof Date) && !(example instanceof Date)) {
+		return (example !== null ? new Date(example) : example) - value === 0;
+	}
+	if ((example instanceof Date) && !(value instanceof Date)) {
+		return (value !== null ? new Date(value) : value) - example === 0;
 	}
 
 	// not strict equality
