@@ -1,6 +1,10 @@
 {
-  "extends": "6river",
-  "parserOptions": {
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"extends": ["6river", "plugin:import/recommended", "prettier"],
+	"parserOptions": {
 		"sourceType": "module"
-  }
+	}
 }

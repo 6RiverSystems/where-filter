@@ -1,12 +1,6 @@
 {
-  "extension": [
-    ".js"
-  ],
-  "temp-directory": "./coverage/tmp",
-  "report-dir": "./coverage",
-  "reporter": [
-    "lcov",
-    "text",
-    "html"
-  ]
+	"extension": [".js"],
+	"temp-directory": "./coverage/tmp",
+	"report-dir": "./coverage",
+	"reporter": ["lcov", "text", "html"]
 }
