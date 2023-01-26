@@ -42,9 +42,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
-      - run:
-          name: Unit Tests
-          command: npm run test:single
+      - run: npm test
       - sixrs-gke/codecov
 
   publish:
