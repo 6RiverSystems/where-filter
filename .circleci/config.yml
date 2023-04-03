@@ -1,54 +1,53 @@
 version: 2.1
+
 orbs:
-  sixrs-gke: sixriversystems/sixrs-gke@3
+  sixrs-gke: sixriversystems/sixrs-gke@7
+
+aliases:
+  - &node_image cimg/node:16.19.1
+  - &npm_global_cache dependency-cache-v1-{{ checksum ".node-version" }}-{{ checksum "package-lock.json" }}
+
 jobs:
   prep:
     docker:
-      - image: cimg/node:14.17.6
+      - image: *node_image
     steps:
       - checkout
       - sixrs-gke/setup-private-npm
       - restore_cache:
-          key: |
-            - dependency-cache-{{ checksum "package.json" }}
-            - dependency-cache-
-
-      - run:
-          name: Install Dependencies
-          command: npm install
-
+          key: *npm_global_cache
+      - run: npm ci
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: *npm_global_cache
           paths:
-            - ./node_modules
-
+            - ~/.npm
       - persist_to_workspace:
           root: ./
           paths:
-            - .
+            - ./node_modules
 
   lint:
     docker:
-      - image: cimg/node:14.17.6
+      - image: *node_image
     steps:
+      - checkout
       - attach_workspace:
           at: ./
-      - run:
-          name: Lint
-          command: npm run lint
+      - run: npm run lint
+
   tests:
     docker:
-      - image: cimg/node:14.17.6
+      - image: *node_image
     steps:
+      - checkout
       - attach_workspace:
           at: ./
-      - run:
-          name: Unit Tests
-          command: npm run test:single
+      - run: npm test
       - sixrs-gke/codecov
+
   publish:
     docker:
-      - image: cimg/node:14.17.6
+      - image: *node_image
     steps:
       - attach_workspace:
           at: ./

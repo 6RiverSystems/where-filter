@@ -1,5 +1,3 @@
-
-
 // Where-like filter to support syntax expressions like:
 // {a: 1}
 // {and: [{a: 1}, {b: "2"}]}
@@ -71,7 +69,6 @@ function compare(val1, val2) {
 	return val1 == val2 ? 0 : NaN;
 }
 
-
 function testInEquality(example, val) {
 	if ('gt' in example) {
 		return compare(val, example.gt) > 0;
@@ -87,7 +84,6 @@ function testInEquality(example, val) {
 	}
 	return false;
 }
-
 
 function toRegExp(pattern) {
 	if (pattern instanceof RegExp) {
@@ -165,8 +161,10 @@ function test(example, value) {
 		}
 
 		if ('between' in example) {
-			return testInEquality({gte: example.between[0]}, value) &&
-				testInEquality({lte: example.between[1]}, value);
+			return (
+				testInEquality({ gte: example.between[0] }, value) &&
+				testInEquality({ lte: example.between[1] }, value)
+			);
 		}
 
 		if (example.like || example.nlike || example.ilike || example.nilike) {
@@ -192,7 +190,6 @@ function test(example, value) {
 			}
 		}
 
-
 		if (testInEquality(example, value)) {
 			return true;
 		}
@@ -203,8 +200,10 @@ function test(example, value) {
 
 	// not strict equality
 	// CAUTION: objects are converted and compared as strings, ie "[object Object]"
-	/* eslint-disable-next-line eqeqeq */
-	return (example !== null ? example.toString() : example) == (value != null ? value.toString() : value);
+	return (
+		// eslint-disable-next-line eqeqeq
+		(example !== null ? example.toString() : example) == (value != null ? value.toString() : value)
+	);
 }
 
 function whereFilter(where) {
@@ -214,20 +213,20 @@ function whereFilter(where) {
 
 	const keys = Object.keys(where);
 
-	return function(obj) {
-		return keys.every(function(key) {
+	return function (obj) {
+		return keys.every(function (key) {
 			// the expected value can identity-match only if value is string/number/boolean/null
 			if (where[key] === obj[key]) return true;
 
 			if (key === 'and' || key === 'or') {
 				if (Array.isArray(where[key])) {
 					if (key === 'and') {
-						return where[key].every(function(cond) {
+						return where[key].every(function (cond) {
 							return whereFilter(cond)(obj);
 						});
 					}
 					if (key === 'or') {
-						return where[key].some(function(cond) {
+						return where[key].some(function (cond) {
 							return whereFilter(cond)(obj);
 						});
 					}
@@ -240,12 +239,12 @@ function whereFilter(where) {
 				const matcher = where[key];
 
 				if (matcher.some) {
-					return value.some(function(v) {
+					return value.some(function (v) {
 						return whereFilter(matcher.some)(v);
 					});
 				}
 				if (matcher.all) {
-					return value.every(function(v) {
+					return value.every(function (v) {
 						return whereFilter(matcher.all)(v);
 					});
 				}
@@ -261,7 +260,7 @@ function whereFilter(where) {
 				if (matcher.neq !== undefined && value.length <= 0) {
 					return true;
 				}
-				return value.some(function(v, i) {
+				return value.some(function (v, i) {
 					const cond = {};
 
 					cond[i] = matcher;
