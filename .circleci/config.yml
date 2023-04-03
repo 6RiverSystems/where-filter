@@ -49,6 +49,7 @@ jobs:
     docker:
       - image: *node_image
     steps:
+      - checkout
       - attach_workspace:
           at: ./
       - sixrs-gke/run-release
