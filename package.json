@@ -23,8 +23,8 @@
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "chai": "^4.1.2",
-    "eslint": "8.32.0",
-    "eslint-config-6river": "6.1.0-node.6",
+    "eslint": "8.37.0",
+    "eslint-config-6river": "7.0.0",
     "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "8.6.0",
@@ -35,6 +35,6 @@
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
-    "prettier": "2.8.3"
+    "prettier": "^2.8.7"
   }
 }
