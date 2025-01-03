@@ -1,9 +1,12 @@
+// TODO: lots of "as any" and ": any" in this code for a quick and dirty conversion
+//       to typescript; should be cleaned up to use real types
+
 // Where-like filter to support syntax expressions like:
 // {a: 1}
 // {and: [{a: 1}, {b: "2"}]}
 // {or: [{a: 1}, {b: "2"}]}
 
-function getValue(obj, path) {
+function getValue(obj: any, path: string) {
 	/* eslint-disable-next-line eqeqeq */
 	if (obj == null) {
 		return undefined;
@@ -15,7 +18,7 @@ function getValue(obj, path) {
 	let val = obj;
 
 	for (let i = 0, n = keys.length; i < n; i++) {
-		val = val[keys[i]];
+		val = val[keys[i] as any];
 		/* eslint-disable-next-line eqeqeq */
 		if (val == null) {
 			return val;
@@ -31,7 +34,7 @@ function getValue(obj, path) {
  * @return {number} 0: =, positive: >, negative <
  * @private
  */
-function compare(val1, val2) {
+function compare(val1: any, val2: any) {
 	/* eslint-disable-next-line eqeqeq */
 	if (val1 == null || val2 == null) {
 		// Either val1 or val2 is null or undefined
@@ -57,10 +60,10 @@ function compare(val1, val2) {
 		return NaN;
 	}
 	if (typeof val1 === 'boolean') {
-		return val1 - val2;
+		return (val1 as any) - val2;
 	}
 	if (val1 instanceof Date) {
-		const result = val1 - val2;
+		const result = (val1 as any) - val2;
 
 		return result;
 	}
@@ -69,7 +72,7 @@ function compare(val1, val2) {
 	return val1 == val2 ? 0 : NaN;
 }
 
-function testInEquality(example, val) {
+function testInEquality(example: any, val: any) {
 	if ('gt' in example) {
 		return compare(val, example.gt) > 0;
 	}
@@ -85,7 +88,7 @@ function testInEquality(example, val) {
 	return false;
 }
 
-function toRegExp(pattern) {
+function toRegExp(pattern: RegExp | string) {
 	if (pattern instanceof RegExp) {
 		return pattern;
 	}
@@ -118,7 +121,7 @@ function toRegExp(pattern) {
 	return regex;
 }
 
-function test(example, value) {
+function test(example: any, value: any) {
 	if (typeof value === 'string' && example instanceof RegExp) {
 		return value.match(example);
 	}
@@ -206,14 +209,24 @@ function test(example, value) {
 	);
 }
 
-function whereFilter(where) {
-	if (typeof where === 'function') {
-		return where;
+export type FilterFunction<T> = (obj: T) => boolean;
+
+// TODO: real types
+// @ts-ignore
+export type Where<T> = any;
+
+export function whereFilter<T>(
+	filter: Where<T> | FilterFunction<T>,
+): FilterFunction<T> {
+	if (typeof filter === 'function') {
+		return filter;
 	}
 
+	const where = filter as any;
 	const keys = Object.keys(where);
 
-	return function (obj) {
+	return function (o) {
+		const obj = o as any;
 		return keys.every(function (key) {
 			// the expected value can identity-match only if value is string/number/boolean/null
 			if (where[key] === obj[key]) return true;
@@ -260,8 +273,8 @@ function whereFilter(where) {
 				if (matcher.neq !== undefined && value.length <= 0) {
 					return true;
 				}
-				return value.some(function (v, i) {
-					const cond = {};
+				return value.some(function (_v, i) {
+					const cond = {} as any;
 
 					cond[i] = matcher;
 					return whereFilter(cond)(value);
@@ -278,7 +291,7 @@ function whereFilter(where) {
 			if (dotIndex !== -1) {
 				const subValue = obj[key.substring(0, dotIndex)];
 
-				const subWhere = {};
+				const subWhere = {} as any;
 				const subKey = key.substring(dotIndex + 1);
 
 				subWhere[subKey] = where[key];
@@ -294,4 +307,4 @@ function whereFilter(where) {
 	};
 }
 
-module.exports = whereFilter;
+export default whereFilter;

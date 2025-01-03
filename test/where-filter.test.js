@@ -1,7 +1,9 @@
+// TODO: convert to typescript
+
 const { expect, should, assert } = require('chai');
 const { DateTime } = require('luxon');
 
-const whereFilter = require('../where-filter');
+const whereFilter = require('../dist/where-filter').default;
 
 should();
 
