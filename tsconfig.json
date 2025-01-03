@@ -10,7 +10,6 @@
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
 		"forceConsistentCasingInFileNames": true,
-		"incremental": true,
 		"lib": ["es2023"],
 		// TODO: can't change these to Node16 until
 		// https://github.com/kulshekhar/ts-jest/issues/4198 is resolved

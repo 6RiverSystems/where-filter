@@ -87,10 +87,6 @@ workflows:
             - build
           context: 6rs-circle
       - publish:
-          # filters:
-          #   branches:
-          #     only:
-          #       - main
           requires:
             - build
             - lint
