@@ -215,7 +215,11 @@ export type FilterFunction<T> = (obj: T) => boolean;
 // @ts-ignore
 export type Where<T> = any;
 
-export default function whereFilter<T>(filter: Where<T>): FilterFunction<T> {
+export default function whereFilter<T>(filter: Where<T> | FilterFunction<T>): FilterFunction<T> {
+	if (typeof filter === 'function') {
+		return filter;
+	}
+
 	const where = filter as any;
 	const keys = Object.keys(where);
 
