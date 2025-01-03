@@ -4,7 +4,7 @@ orbs:
   sixrs-gke: sixriversystems/sixrs-gke@7
 
 aliases:
-  - &node_image cimg/node:16.19.1
+  - &node_image cimg/node:20.15.1
   - &npm_global_cache dependency-cache-v1-{{ checksum ".node-version" }}-{{ checksum "package-lock.json" }}
 
 jobs:
@@ -35,6 +35,19 @@ jobs:
           at: ./
       - run: npm run lint
 
+  build:
+    docker:
+      - image: *node_image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run: npm run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - .
+
   tests:
     docker:
       - image: *node_image
@@ -61,21 +74,21 @@ workflows:
     jobs:
       - prep:
           context: 6rs-circle
+      - build:
+          requires:
+            - prep
+          context: 6rs-circle
       - lint:
           requires:
             - prep
           context: 6rs-circle
       - tests:
           requires:
-            - prep
+            - build
           context: 6rs-circle
       - publish:
-          filters:
-            branches:
-              only:
-                - main
           requires:
-            - prep
+            - build
             - lint
             - tests
           context: 6rs-public-npm
