@@ -271,10 +271,7 @@ export default function whereFilter<T>(filter: Where<T> | FilterFunction<T>): Fi
 					return true;
 				}
 				return value.some(function (_v, i) {
-					const cond = {} as any;
-
-					cond[i] = matcher;
-					return whereFilter(cond)(value);
+					return whereFilter({ [i]: matcher })(value);
 				});
 			}
 
