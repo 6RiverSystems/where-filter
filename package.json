@@ -9,9 +9,9 @@
   "license": "MIT",
   "author": "",
   "main": "dist/where-filter.js",
-	"typings": "dist/where-filter.d.ts",
+  "typings": "dist/where-filter.d.ts",
   "files": [
-		"where-filter.ts",
+    "where-filter.ts",
     "dist"
   ],
   "scripts": {
