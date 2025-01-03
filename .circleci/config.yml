@@ -4,7 +4,7 @@ orbs:
   sixrs-gke: sixriversystems/sixrs-gke@7
 
 aliases:
-  - &node_image cimg/node:16.19.1
+  - &node_image cimg/node:20.15.1
   - &npm_global_cache dependency-cache-v1-{{ checksum ".node-version" }}-{{ checksum "package-lock.json" }}
 
 jobs:
