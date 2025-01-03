@@ -35,6 +35,15 @@ jobs:
           at: ./
       - run: npm run lint
 
+  build:
+    docker:
+      - image: *node_image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run: npm run build
+
   tests:
     docker:
       - image: *node_image
@@ -61,13 +70,17 @@ workflows:
     jobs:
       - prep:
           context: 6rs-circle
+      - build:
+          requires:
+            - prep
+          context: 6rs-circle
       - lint:
           requires:
             - prep
           context: 6rs-circle
       - tests:
           requires:
-            - prep
+            - build
           context: 6rs-circle
       - publish:
           filters:
@@ -75,7 +88,7 @@ workflows:
               only:
                 - main
           requires:
-            - prep
+            - build
             - lint
             - tests
           context: 6rs-public-npm
