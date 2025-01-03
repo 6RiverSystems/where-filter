@@ -285,7 +285,7 @@ export default function whereFilter<T>(filter: Where<T> | FilterFunction<T>): Fi
 			if (dotIndex !== -1) {
 				const subValue = obj[key.substring(0, dotIndex)];
 
-				const subWhere = {} as any;
+				const subWhere: Record<string, unknown> = {};
 				const subKey = key.substring(dotIndex + 1);
 
 				subWhere[subKey] = where[key];
