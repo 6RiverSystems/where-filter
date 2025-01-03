@@ -11,6 +11,7 @@
   "main": "dist/where-filter.js",
 	"typings": "dist/where-filter.d.ts",
   "files": [
+		"where-filter.ts",
     "dist"
   ],
   "scripts": {
