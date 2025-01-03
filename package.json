@@ -9,9 +9,9 @@
   "license": "MIT",
   "author": "",
   "main": "dist/where-filter.js",
-	"files": [
-		"dist"
-	],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "commitmsg": "commitlint -e ${GIT_PARAMS}",
     "lint": "npm-run-all lint:eslint lint:prettier",

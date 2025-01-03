@@ -215,9 +215,7 @@ export type FilterFunction<T> = (obj: T) => boolean;
 // @ts-ignore
 export type Where<T> = any;
 
-export function whereFilter<T>(
-	filter: Where<T> | FilterFunction<T>,
-): FilterFunction<T> {
+export function whereFilter<T>(filter: Where<T> | FilterFunction<T>): FilterFunction<T> {
 	if (typeof filter === 'function') {
 		return filter;
 	}
