@@ -223,8 +223,7 @@ export function whereFilter<T>(filter: Where<T> | FilterFunction<T>): FilterFunc
 	const where = filter as any;
 	const keys = Object.keys(where);
 
-	return function (o) {
-		const obj = o as any;
+	return function (obj: any) {
 		return keys.every(function (key) {
 			// the expected value can identity-match only if value is string/number/boolean/null
 			if (where[key] === obj[key]) return true;
